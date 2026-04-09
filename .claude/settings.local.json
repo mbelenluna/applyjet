@@ -13,7 +13,12 @@
       "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(dashboard\\)/analysis/\")",
       "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(dashboard\\)/analysis/[id]/\")",
       "Bash(npx tsc:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(dir C:UsersbelenDocumentsCVsrc)",
+      "Bash(node -e \"require\\(''''/c/Users/belen/Documents/CV/node_modules/pdf-parse/index.js''''\\)\")",
+      "Bash(node -e \":*)",
+      "Bash(/dev/null cat:*)",
+      "Bash(node -e \"var fs=require\\(''''fs''''\\); var d=JSON.parse\\(fs.readFileSync\\(''''/c/Users/belen/Documents/CV/node_modules/@auth/prisma-adapter/package.json'''',''''utf8''''\\)\\); console.log\\(Object.keys\\(d\\).join\\('''',''''\\)\\);\")"
     ]
   }
 }
