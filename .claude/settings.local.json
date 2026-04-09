@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx prisma db push)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx tsc --noEmit)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" NEXTAUTH_SECRET=\"test-secret\" npm run build)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" NEXTAUTH_SECRET=\"test-secret\" timeout 10 npm run dev)",
+      "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(dashboard\\)/\")",
+      "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(auth\\)/\")",
+      "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(dashboard\\)/analysis/\")",
+      "Bash(ls \"C:/Users/belen/Documents/CV/src/app/\\(dashboard\\)/analysis/[id]/\")",
+      "Bash(npx tsc:*)",
+      "Bash(npm uninstall:*)"
+    ]
+  }
+}
