@@ -14,7 +14,7 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -22,7 +22,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
               <Zap className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-lg">ApplyJet</span>
+            <span className="font-bold text-white text-lg">ApplyJet</span>
           </Link>
 
           {/* Desktop Nav */}
