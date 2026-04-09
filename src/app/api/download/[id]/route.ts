@@ -32,6 +32,19 @@ export async function GET(
 
     const format = request.nextUrl.searchParams.get('format') || 'html'
 
+    // Check plan for format restrictions
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { planType: true },
+    })
+
+    if (user?.planType === 'free' && format === 'txt') {
+      return NextResponse.json(
+        { error: 'Upgrade required for this format' },
+        { status: 403 }
+      )
+    }
+
     if (format === 'txt') {
       return new NextResponse(tailoredCV.content, {
         headers: {

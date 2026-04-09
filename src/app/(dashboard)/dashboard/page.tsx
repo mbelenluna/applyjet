@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FileText, Search, History, ArrowRight, Clock, TrendingUp, Upload } from 'lucide-react'
+import { FileText, Search, History, ArrowRight, Clock, TrendingUp, Upload, Zap, CreditCard } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -26,22 +26,30 @@ interface DashboardData {
   avgMatchScore?: number
 }
 
+interface CreditsData {
+  analysisCredits: number
+  planType: string
+}
+
 export default function DashboardPage() {
   const { data: session } = useSession()
   const { t } = useLanguage()
   const d = t.dashboard
   const [data, setData] = useState<DashboardData | null>(null)
+  const [credits, setCredits] = useState<CreditsData | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [cvRes, analysesRes] = await Promise.all([
+        const [cvRes, analysesRes, creditsRes] = await Promise.all([
           fetch('/api/cv'),
           fetch('/api/analyze'),
+          fetch('/api/user/credits'),
         ])
         const cvData = await cvRes.json()
         const analysesData = await analysesRes.json()
+        const creditsData = await creditsRes.json()
 
         const analyses = analysesData.analyses || []
         const scoredAnalyses = analyses.filter((a: RecentAnalysis) => a.matchScore != null)
@@ -59,6 +67,13 @@ export default function DashboardPage() {
           recentAnalyses: analyses.slice(0, 5),
           avgMatchScore: avgScore,
         })
+
+        if (creditsData.analysisCredits !== undefined) {
+          setCredits({
+            analysisCredits: creditsData.analysisCredits,
+            planType: creditsData.planType || 'free',
+          })
+        }
       } catch (error) {
         console.error('Dashboard data error:', error)
       } finally {
@@ -160,6 +175,37 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Plan Card */}
+      {credits && (
+        <Card className="p-5">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <CreditCard className="h-5 w-5 text-indigo-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 capitalize">
+                  {credits.planType} Plan
+                </p>
+                <p className="text-sm text-gray-500 flex items-center gap-1">
+                  <Zap className="h-3.5 w-3.5 text-indigo-500" />
+                  {credits.analysisCredits} {credits.analysisCredits === 1 ? 'analysis' : 'analyses'} remaining
+                </p>
+              </div>
+            </div>
+            {credits.planType === 'free' && (
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5" />
+                Upgrade
+              </Link>
+            )}
+          </div>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div>

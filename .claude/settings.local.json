@@ -18,7 +18,11 @@
       "Bash(node -e \"require\\(''''/c/Users/belen/Documents/CV/node_modules/pdf-parse/index.js''''\\)\")",
       "Bash(node -e \":*)",
       "Bash(/dev/null cat:*)",
-      "Bash(node -e \"var fs=require\\(''''fs''''\\); var d=JSON.parse\\(fs.readFileSync\\(''''/c/Users/belen/Documents/CV/node_modules/@auth/prisma-adapter/package.json'''',''''utf8''''\\)\\); console.log\\(Object.keys\\(d\\).join\\('''',''''\\)\\);\")"
+      "Bash(node -e \"var fs=require\\(''''fs''''\\); var d=JSON.parse\\(fs.readFileSync\\(''''/c/Users/belen/Documents/CV/node_modules/@auth/prisma-adapter/package.json'''',''''utf8''''\\)\\); console.log\\(Object.keys\\(d\\).join\\('''',''''\\)\\);\")",
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_8amYfWuxqFt5@ep-twilight-cloud-amv3dleo-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma db push)",
+      "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\")",
+      "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\\\\billing\")",
+      "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\\\\billing\\\\success\")"
     ]
   }
 }

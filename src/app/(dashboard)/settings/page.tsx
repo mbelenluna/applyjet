@@ -1,9 +1,9 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/react'
-import { User, Lock, FileText, AlertTriangle } from 'lucide-react'
+import { User, Lock, FileText, AlertTriangle, CreditCard, Zap, Loader2 } from 'lucide-react'
 import { Card, CardHeader, CardContent } from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -19,6 +19,40 @@ export default function SettingsPage() {
 
   const [name, setName] = useState(session?.user?.name || '')
   const [savingProfile, setSavingProfile] = useState(false)
+
+  const [analysisCredits, setAnalysisCredits] = useState<number | null>(null)
+  const [planType, setPlanType] = useState<string>('free')
+  const [upgradeLoading, setUpgradeLoading] = useState<'starter' | 'pro' | null>(null)
+
+  useEffect(() => {
+    fetch('/api/user/credits')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.analysisCredits !== undefined) {
+          setAnalysisCredits(d.analysisCredits)
+          setPlanType(d.planType || 'free')
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleUpgrade = async (tier: 'starter' | 'pro') => {
+    setUpgradeLoading(tier)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error(data.error || 'Failed to create checkout')
+      window.location.href = data.url
+    } catch {
+      toast.error('Failed to start checkout. Please try again.')
+    } finally {
+      setUpgradeLoading(null)
+    }
+  }
 
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -103,6 +137,65 @@ export default function SettingsPage() {
         <h1 className="text-2xl font-bold text-gray-900">{s.title}</h1>
         <p className="text-gray-600 mt-1">{s.subtitle}</p>
       </div>
+
+      {/* Plan & Billing */}
+      <Card>
+        <CardHeader>
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <CreditCard className="h-4 w-4 text-indigo-600" />
+            Plan &amp; Billing
+          </h2>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="font-medium text-gray-900 capitalize">{planType} Plan</p>
+              <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
+                <Zap className="h-3.5 w-3.5 text-indigo-500" />
+                {analysisCredits !== null
+                  ? `${analysisCredits} ${analysisCredits === 1 ? 'analysis' : 'analyses'} remaining`
+                  : 'Loading...'}
+              </p>
+            </div>
+          </div>
+          {planType === 'free' && (
+            <div className="space-y-3">
+              <p className="text-sm text-gray-600">Upgrade for more analyses and additional download formats.</p>
+              <div className="flex gap-3 flex-wrap">
+                <button
+                  onClick={() => handleUpgrade('starter')}
+                  disabled={upgradeLoading === 'starter'}
+                  className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {upgradeLoading === 'starter' ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Zap className="h-3.5 w-3.5" />
+                  )}
+                  Starter — $6.99 (20 analyses)
+                </button>
+                <button
+                  onClick={() => handleUpgrade('pro')}
+                  disabled={upgradeLoading === 'pro'}
+                  className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {upgradeLoading === 'pro' ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Zap className="h-3.5 w-3.5" />
+                  )}
+                  Pro — $15.99 (50 analyses)
+                </button>
+              </div>
+            </div>
+          )}
+          {planType !== 'free' && (
+            <p className="text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2 inline-block">
+              You are on the {planType} plan. Thank you for your support!
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Profile */}
       <Card>

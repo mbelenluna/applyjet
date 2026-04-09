@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar'
 import Hero from '@/components/landing/Hero'
 import Features from '@/components/landing/Features'
 import HowItWorks from '@/components/landing/HowItWorks'
+import Pricing from '@/components/landing/Pricing'
 import Link from 'next/link'
 import { ArrowRight, Zap } from 'lucide-react'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
@@ -20,6 +21,7 @@ export default function LandingPage() {
         <Hero />
         <Features />
         <HowItWorks />
+        <Pricing />
 
         {/* CTA Section */}
         <section className="py-28 bg-white">

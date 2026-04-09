@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { Search, AlertCircle, CheckCircle, Loader2, Zap } from 'lucide-react'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Button from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import PaywallModal from '@/components/ui/PaywallModal'
 import toast from 'react-hot-toast'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
 
@@ -22,9 +23,22 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [analysisCredits, setAnalysisCredits] = useState<number | null>(null)
+  const [planType, setPlanType] = useState<string>('free')
+  const [showPaywall, setShowPaywall] = useState(false)
 
   useEffect(() => {
     fetch('/api/cv').then((r) => r.json()).then((d) => setHasCV(!!d.cv))
+    fetch('/api/user/credits')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.analysisCredits !== undefined) {
+          setAnalysisCredits(d.analysisCredits)
+          setPlanType(d.planType || 'free')
+          if (d.analysisCredits <= 0) setShowPaywall(true)
+        }
+      })
+      .catch(() => {})
   }, [])
 
   const validate = () => {
@@ -79,9 +93,37 @@ export default function AnalyzePage() {
 
   return (
     <div className="max-w-2xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{a.title}</h1>
-        <p className="text-gray-600 mt-1">{a.subtitle}</p>
+      <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
+
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{a.title}</h1>
+          <p className="text-gray-600 mt-1">{a.subtitle}</p>
+        </div>
+        {analysisCredits !== null && (
+          <div className="flex-shrink-0 text-right">
+            <div
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
+                analysisCredits <= 0
+                  ? 'bg-red-50 text-red-700 border border-red-200'
+                  : analysisCredits <= 3
+                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                  : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+              }`}
+            >
+              <Zap className="h-3.5 w-3.5" />
+              {analysisCredits} {analysisCredits === 1 ? 'analysis' : 'analyses'} left
+            </div>
+            {analysisCredits <= 0 && (
+              <button
+                onClick={() => setShowPaywall(true)}
+                className="block text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-1"
+              >
+                Upgrade to get more
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {hasCV === false && (

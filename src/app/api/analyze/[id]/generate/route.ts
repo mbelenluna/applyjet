@@ -26,6 +26,19 @@ export async function POST(
     } catch {}
 
 
+    // Check credits before generation
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { analysisCredits: true },
+    })
+
+    if (!user || user.analysisCredits <= 0) {
+      return NextResponse.json(
+        { error: 'NO_CREDITS', message: 'No analyses remaining' },
+        { status: 402 }
+      )
+    }
+
     // Get analysis with gaps
     const analysis = await prisma.jobAnalysis.findFirst({
       where: { id: params.id, userId: session.user.id },
@@ -72,6 +85,12 @@ export async function POST(
     await prisma.jobAnalysis.update({
       where: { id: params.id },
       data: { status: 'complete' },
+    })
+
+    // Decrement user credits on successful generation
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { analysisCredits: { decrement: 1 } },
     })
 
     // Save tailored CV
