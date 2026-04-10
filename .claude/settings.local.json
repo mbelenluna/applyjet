@@ -22,7 +22,8 @@
       "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_8amYfWuxqFt5@ep-twilight-cloud-amv3dleo-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma db push)",
       "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\")",
       "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\\\\billing\")",
-      "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\\\\billing\\\\success\")"
+      "Bash(ls \"C:\\\\Users\\\\belen\\\\Documents\\\\CV\\\\src\\\\app\\\\\\(dashboard\\)\\\\billing\\\\success\")",
+      "Bash(npm run:*)"
     ]
   }
 }

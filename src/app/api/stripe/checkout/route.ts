@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' })
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
   const price = PRICES[tier]
 
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
