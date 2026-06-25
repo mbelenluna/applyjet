@@ -65,9 +65,11 @@ async function callClaude(
       if (block.type !== 'text') throw new Error('Unexpected response type')
 
       // Strip any markdown code fences Claude might add around JSON
-      const text = block.text.trim()
-      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/)
-      return jsonMatch ? jsonMatch[1].trim() : text
+      let text = block.text.trim()
+      if (text.startsWith('```')) {
+        text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '')
+      }
+      return text.trim()
     } catch (error) {
       if (attempt === retries) throw error
       await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)))
