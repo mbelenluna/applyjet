@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/db'
-import { generateTailoredCV, analyzeJobPost } from '@/lib/ai/openai'
+import { generateTailoredCV } from '@/lib/ai/openai'
 import { generateCVHTML } from '@/lib/generators/cv-pdf'
 import { ParsedProfile } from '@/lib/ai/types'
 
@@ -50,9 +50,6 @@ export async function POST(
 
     const parsedProfile: ParsedProfile = JSON.parse(masterCV.parsedData)
 
-    // Get job requirements from AI (or re-extract)
-    const jobRequirements = await analyzeJobPost(analysis.jobPostText)
-
     // Prepare gap decisions for AI
     const gapDecisions = analysis.gaps.map((gap) => ({
       requirement: gap.requirement,
@@ -63,8 +60,8 @@ export async function POST(
       learningSuggestion: gap.learningSuggestion || undefined,
     }))
 
-    // Generate tailored CV
-    const tailoredContent = await generateTailoredCV(parsedProfile, jobRequirements, gapDecisions, language)
+    // Generate tailored CV — pass raw job post text directly (no extra Claude call)
+    const tailoredContent = await generateTailoredCV(parsedProfile, analysis.jobPostText, gapDecisions, language)
 
     // Generate HTML version
     const htmlContent = generateCVHTML(tailoredContent)

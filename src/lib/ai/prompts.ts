@@ -195,7 +195,15 @@ Given the job requirement and the candidate's related experience, provide a conc
 Keep the suggestion to 1-2 sentences. Focus on drawing genuine connections.
 Return only the reframing text, no additional commentary.`
 
-export const CV_GENERATION_PROMPT = `You are an expert CV writer specialising in ATS-optimised, single-page resumes. Generate a tailored CV based on the master CV data, the target job requirements, and the candidate's gap decisions.
+export const CV_GENERATION_PROMPT = `You are an expert CV writer specialising in ATS-optimised, single-page resumes. Generate a tailored CV based on the master CV data, the target job posting, and the candidate's gap decisions.
+
+═══ GAP DECISIONS — MANDATORY (highest priority rule) ═══
+You MUST process every gap decision before writing anything else. For each gap in the GAP DECISIONS list:
+- "keep" → ensure this skill/experience is clearly present in the CV
+- "add_real" → you MUST incorporate the userAddedText verbatim or near-verbatim into the CV. Do NOT omit it. Find the most natural section (skills, work experience bullet, etc.) and add it. If userAddedText is provided, it MUST appear somewhere in the CV.
+- "reframe" → use the reframeSuggestion to rephrase the relevant existing experience
+- "learning_statement" → add one honest line (e.g. "Currently developing expertise in X") using the learningSuggestion text
+- "skip" → omit this requirement entirely
 
 ═══ TRUTHFULNESS (non-negotiable) ═══
 1. NEVER fabricate qualifications, skills, certifications, or experience.

@@ -445,7 +445,7 @@ Provide a concise, honest reframing suggestion (1–2 sentences).`
 
 export async function generateTailoredCV(
   parsedProfile: ParsedProfile,
-  jobRequirements: JobRequirements,
+  jobPostText: string,
   gapDecisions: Array<{
     requirement: string
     status: string
@@ -470,13 +470,13 @@ export async function generateTailoredCV(
 MASTER CV DATA:
 ${JSON.stringify(parsedProfile, null, 2)}
 
-TARGET JOB REQUIREMENTS:
-${JSON.stringify(jobRequirements, null, 2)}
+JOB POSTING (extract requirements from this):
+${jobPostText}
 
-GAP DECISIONS (what the candidate chose to do about each gap):
+GAP DECISIONS — YOU MUST INCORPORATE ALL OF THESE:
 ${JSON.stringify(gapDecisions, null, 2)}
 
-Generate a complete, ATS-optimised tailored CV that incorporates all the gap decisions above. Be thorough and produce a polished, professional document.${languageInstruction}`
+Generate a complete, ATS-optimised tailored CV that incorporates ALL gap decisions above, especially any "add_real" decisions with userAddedText.${languageInstruction}`
 
   return callClaudeText(CV_GENERATION_PROMPT, userContent)
 }
