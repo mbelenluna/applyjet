@@ -155,43 +155,43 @@ export default function GapCard({ gap, onDecisionChange }: GapCardProps) {
             />
           )}
 
-          {selectedDecision === 'reframe' && gap.reframeSuggestion && (
+          {selectedDecision === 'reframe' && (
             <div className="bg-indigo-50 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <Lightbulb className="h-4 w-4 text-indigo-600 flex-shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-indigo-700 uppercase tracking-wide mb-1">{g.aiSuggestion}</p>
-                  <p className="text-sm text-indigo-900">{gap.reframeSuggestion}</p>
+              {gap.reframeSuggestion && (
+                <div className="flex items-start gap-2 mb-2">
+                  <Lightbulb className="h-4 w-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-indigo-700 uppercase tracking-wide mb-1">{g.aiSuggestion}</p>
+                    <p className="text-sm text-indigo-900">{gap.reframeSuggestion}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-2">
-                <Textarea
-                  placeholder={g.reframePlaceholder}
-                  value={userText}
-                  onChange={(e) => handleTextChange(e.target.value)}
-                  rows={2}
-                />
-              </div>
+              )}
+              <Textarea
+                placeholder={g.reframePlaceholder}
+                value={userText}
+                onChange={(e) => handleTextChange(e.target.value)}
+                rows={2}
+              />
             </div>
           )}
 
-          {selectedDecision === 'learning_statement' && gap.learningSuggestion && (
+          {selectedDecision === 'learning_statement' && (
             <div className="bg-purple-50 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <Lightbulb className="h-4 w-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-purple-700 uppercase tracking-wide mb-1">{g.suggestedStatement}</p>
-                  <p className="text-sm text-purple-900">{gap.learningSuggestion}</p>
+              {gap.learningSuggestion && (
+                <div className="flex items-start gap-2 mb-2">
+                  <Lightbulb className="h-4 w-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-purple-700 uppercase tracking-wide mb-1">{g.suggestedStatement}</p>
+                    <p className="text-sm text-purple-900">{gap.learningSuggestion}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-2">
-                <Textarea
-                  placeholder={g.learningPlaceholder}
-                  value={userText}
-                  onChange={(e) => handleTextChange(e.target.value)}
-                  rows={2}
-                />
-              </div>
+              )}
+              <Textarea
+                placeholder={g.learningPlaceholder}
+                value={userText}
+                onChange={(e) => handleTextChange(e.target.value)}
+                rows={2}
+              />
             </div>
           )}
         </div>
