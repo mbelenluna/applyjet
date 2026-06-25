@@ -7,9 +7,6 @@ import prisma from '@/lib/db'
 import { parseCVText } from '@/lib/ai/openai'
 import { parsePDF } from '@/lib/parsers/pdf'
 import { parseDOCX } from '@/lib/parsers/docx'
-import path from 'path'
-import fs from 'fs/promises'
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -36,16 +33,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File size must be under 10MB' }, { status: 400 })
     }
 
-    // Save file to disk
-    const uploadDir = process.env.UPLOAD_DIR || './public/uploads'
-    await fs.mkdir(uploadDir, { recursive: true })
-
-    const ext = file.type === 'application/pdf' ? '.pdf' : '.docx'
-    const fileName = `${session.user.id}-${Date.now()}${ext}`
-    const filePath = path.join(uploadDir, fileName)
     const fileBuffer = Buffer.from(await file.arrayBuffer())
-
-    await fs.writeFile(filePath, fileBuffer)
 
     // Parse the file
     let rawText: string
@@ -98,7 +86,7 @@ export async function POST(request: NextRequest) {
       where: { userId: session.user.id },
       update: {
         fileName: file.name,
-        fileUrl: `/uploads/${fileName}`,
+        fileUrl: '',
         fileType: file.type,
         rawText,
         parsedData: JSON.stringify(parsedData),
@@ -106,7 +94,7 @@ export async function POST(request: NextRequest) {
       create: {
         userId: session.user.id,
         fileName: file.name,
-        fileUrl: `/uploads/${fileName}`,
+        fileUrl: '',
         fileType: file.type,
         rawText,
         parsedData: JSON.stringify(parsedData),
