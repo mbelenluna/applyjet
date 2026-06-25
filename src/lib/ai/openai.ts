@@ -19,6 +19,7 @@ import {
   CV_PARSING_PROMPT,
   JOB_REQUIREMENTS_PROMPT,
   GAP_ANALYSIS_PROMPT,
+  COMBINED_ANALYSIS_PROMPT,
   REFRAME_SUGGESTION_PROMPT,
   CV_GENERATION_PROMPT,
   CV_TRANSLATION_PROMPT,
@@ -405,6 +406,23 @@ Perform a thorough gap analysis comparing the candidate's profile against these 
 
   const result = await callClaude(GAP_ANALYSIS_PROMPT, userContent)
   return JSON.parse(result) as GapAnalysisResult
+}
+
+export async function analyzeJobAndGenerateGaps(
+  jobPostText: string,
+  parsedProfile: ParsedProfile
+): Promise<{ jobRequirements: JobRequirements; gapAnalysis: GapAnalysisResult }> {
+  const client = getClient()
+  if (!client) {
+    return {
+      jobRequirements: getMockJobRequirements(),
+      gapAnalysis: getMockGapAnalysis(),
+    }
+  }
+
+  const userContent = `JOB POSTING:\n${jobPostText}\n\nCANDIDATE CV DATA:\n${JSON.stringify(parsedProfile, null, 2)}`
+  const result = await callClaude(COMBINED_ANALYSIS_PROMPT, userContent)
+  return JSON.parse(result)
 }
 
 export async function generateReframeSuggestion(

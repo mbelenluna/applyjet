@@ -130,6 +130,58 @@ Order the gaps by importance (high first) and status (missing first, then partia
 The matchScore should be 0-100 based on how well the CV meets the requirements.
 Return only valid JSON, no additional text.`
 
+export const COMBINED_ANALYSIS_PROMPT = `You are an expert career advisor. Given a candidate's CV data and a job posting, you will:
+1. Extract all job requirements from the posting
+2. Perform a gap analysis comparing the CV against those requirements
+
+CRITICAL RULES:
+1. NEVER fabricate qualifications, skills, or experience not in the CV
+2. Be honest and accurate
+3. Give benefit of the doubt for adjacent skills
+
+For each job requirement, classify as:
+- "clearly_present": Explicitly mentioned and well-demonstrated in CV
+- "partially_present": Related experience exists but doesn't fully meet the requirement
+- "probably_present": Strongly implied by their background but not explicitly stated
+- "missing": No evidence in CV that this requirement is met
+
+Return a single JSON object with this exact structure:
+{
+  "jobRequirements": {
+    "jobTitle": "Job title or null",
+    "company": "Company name or null",
+    "requiredSkills": ["skill1", ...],
+    "niceToHaveSkills": ["skill1", ...],
+    "experienceLevel": "Entry/Mid/Senior/Lead or null",
+    "yearsOfExperience": 0,
+    "educationRequirements": ["requirement1", ...],
+    "responsibilities": ["responsibility1", ...],
+    "industryKeywords": ["keyword1", ...],
+    "certifications": ["cert1", ...],
+    "softSkills": ["skill1", ...]
+  },
+  "gapAnalysis": {
+    "matchScore": 75,
+    "matchSummary": "Brief 2-3 sentence summary of the overall match",
+    "gaps": [
+      {
+        "requirement": "Requirement name",
+        "category": "skill|experience|education|certification|soft_skill",
+        "status": "clearly_present|partially_present|probably_present|missing",
+        "explanation": "Why this classification was given",
+        "currentCVContent": "Relevant excerpt from CV or null",
+        "suggestedAction": "Specific suggestion or null",
+        "reframeSuggestion": "How to reframe existing experience or null",
+        "learningSuggestion": "A truthful learning statement or null",
+        "importance": "high|medium|low",
+        "order": 0
+      }
+    ]
+  }
+}
+
+Order gaps by importance (high first). Return only valid JSON, no additional text.`
+
 export const REFRAME_SUGGESTION_PROMPT = `You are an expert career coach helping a candidate honestly reframe their existing experience.
 
 CRITICAL RULES:

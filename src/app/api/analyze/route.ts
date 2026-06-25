@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/db'
-import { analyzeJobPost, generateGapAnalysis } from '@/lib/ai/openai'
+import { analyzeJobAndGenerateGaps } from '@/lib/ai/openai'
 import { ParsedProfile } from '@/lib/ai/types'
 
 export async function POST(request: NextRequest) {
@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Extract job requirements
-    const jobRequirements = await analyzeJobPost(jobPostText)
+    // Extract job requirements and run gap analysis in a single Claude call
+    const { jobRequirements, gapAnalysis: gapResult } = await analyzeJobAndGenerateGaps(jobPostText, parsedProfile)
 
     // Update job title/company from AI extraction if not provided
     if (!jobTitle && jobRequirements.jobTitle) {
@@ -66,9 +66,6 @@ export async function POST(request: NextRequest) {
         data: { company: jobRequirements.company },
       })
     }
-
-    // Run gap analysis
-    const gapResult = await generateGapAnalysis(parsedProfile, jobRequirements)
 
     // Save gaps to database
     const gapsToCreate = gapResult.gaps.map((gap, index) => ({
