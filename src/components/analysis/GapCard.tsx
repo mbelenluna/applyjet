@@ -38,7 +38,15 @@ export default function GapCard({ gap, onDecisionChange }: GapCardProps) {
 
   const handleDecisionChange = (decision: UserDecision) => {
     setSelectedDecision(decision)
-    onDecisionChange(gap.id, decision, userText)
+    if (decision === 'reframe' && gap.reframeSuggestion && !userText) {
+      setUserText(gap.reframeSuggestion)
+      onDecisionChange(gap.id, decision, gap.reframeSuggestion)
+    } else if (decision === 'learning_statement' && gap.learningSuggestion && !userText) {
+      setUserText(gap.learningSuggestion)
+      onDecisionChange(gap.id, decision, gap.learningSuggestion)
+    } else {
+      onDecisionChange(gap.id, decision, userText)
+    }
   }
 
   const handleTextChange = (text: string) => {
@@ -159,7 +167,7 @@ export default function GapCard({ gap, onDecisionChange }: GapCardProps) {
               <div className="mt-2">
                 <Textarea
                   placeholder={g.reframePlaceholder}
-                  value={userText || gap.reframeSuggestion}
+                  value={userText}
                   onChange={(e) => handleTextChange(e.target.value)}
                   rows={2}
                 />
@@ -179,7 +187,7 @@ export default function GapCard({ gap, onDecisionChange }: GapCardProps) {
               <div className="mt-2">
                 <Textarea
                   placeholder={g.learningPlaceholder}
-                  value={userText || gap.learningSuggestion}
+                  value={userText}
                   onChange={(e) => handleTextChange(e.target.value)}
                   rows={2}
                 />
