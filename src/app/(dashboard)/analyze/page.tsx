@@ -35,7 +35,7 @@ export default function AnalyzePage() {
         if (d.analysisCredits !== undefined) {
           setAnalysisCredits(d.analysisCredits)
           setPlanType(d.planType || 'free')
-          if (d.analysisCredits <= 0) setShowPaywall(true)
+          // if (d.analysisCredits <= 0) setShowPaywall(true)
         }
       })
       .catch(() => {})
